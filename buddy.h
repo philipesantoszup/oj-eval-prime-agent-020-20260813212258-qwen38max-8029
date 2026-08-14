@@ -9,7 +9,10 @@
 
 #define IS_ERR_VALUE(x) ((x) >= (unsigned long)-MAX_ERRNO)
 static inline void *ERR_PTR(long error) { return (void *)error; }
-static inline long PTR_ERR(const void *ptr) { return (long)ptr; }
+/* PTR_ERR as a macro so it accepts both pointers and integer return values
+ * (e.g. PTR_ERR(return_pages(...))) on strict compilers (GCC >= 14 treats
+ * implicit int-to-pointer conversion as an error). */
+#define PTR_ERR(x) ((long)(unsigned long)(x))
 static inline long IS_ERR(const void *ptr) { return IS_ERR_VALUE((unsigned long)ptr); }
 
 
